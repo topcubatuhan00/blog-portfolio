@@ -1,0 +1,63 @@
+using Blog.Domain.Context;
+using Blog.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// MVC için Controller & View desteðini ekleme
+builder.Services.AddControllersWithViews();
+
+// Veritabaný baðlantýsýný ekleme
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Identity Servisini ekleme
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+
+    options.SignIn.RequireConfirmedEmail = false; // 
+})
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// Authentication ve Authorization ekleme
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";   // Giriþ sayfasý yolu
+    options.LogoutPath = "/Auth/Logout"; // Çýkýþ yapma yolu
+    options.AccessDeniedPath = "/Auth/AccessDenied"; // Yetkisiz eriþim sayfasý
+});
+
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+var app = builder.Build();
+
+// Geliþtirme ve hata yönetimi
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication(); // Kimlik doðrulamayý ekle
+app.UseAuthorization();  // Yetkilendirmeyi ekle
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
