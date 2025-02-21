@@ -14,4 +14,5 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<About> Abouts { get; set; }
     public DbSet<Blogs> Blogs { get; set; }
     public DbSet<JobHistory> JobHistorys { get; set; }
+    public DbSet<Skill> Skills { get; set; }
 }

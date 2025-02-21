@@ -1,0 +1,42 @@
+﻿<header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+        <a href="index.html" class="logo d-flex align-items-center me-auto">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+            <img src="~/userTheme/assets/img/logo.png" alt="">
+
+            <h1 class="sitename">Batuhan Topcu</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="/" class="active">Ana Sayfa<br></a></li>
+                <li><a href="/about">Hakkımda</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/#contact">İletişim</a></li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li><a href="/Admin">Panel</a></li>
+                    <li><a href="/Auth/SignOut">Çıkış Yap</a></li>
+                }
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+    </div>
+</header>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let currentUrl = window.location.pathname; // Şu anki URL'yi al
+
+        document.querySelectorAll(".navmenu ul li a").forEach(link => {
+            if (link.getAttribute("href") === currentUrl) {
+                link.classList.add("active");
+            } else {
+                link.classList.remove("active");
+            }
+        });
+    });
+</script>

@@ -5,7 +5,7 @@ namespace Blog.Controllers
 {
     public class AdminController : Controller
     {
-        [Authorize(Roles = "Admin2")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             return View();
