@@ -1,5 +1,13 @@
-﻿namespace Blog.Application.Abstract;
+﻿using Blog.Domain.Entities;
+using Blog.Domain.Models.Skill;
 
-public class ISkillService
+namespace Blog.Application.Abstract;
+
+public interface ISkillService
 {
+    Task<bool> AddSkill(CreateSkillModel skill);
+    Task<bool> UpdateSkill(UpdateSkillModel skill);
+    Task<bool> DeleteSkill(int id);
+    Task<Skill> GetSkill(int id);
+    Task<List<Skill>> GetSkills();
 }

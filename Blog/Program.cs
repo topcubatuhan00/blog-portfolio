@@ -1,3 +1,4 @@
+using Blog.Configurations;
 using Blog.Domain.Context;
 using Blog.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -5,14 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC için Controller & View desteðini ekleme
 builder.Services.AddControllersWithViews();
 
-// Veritabaný baðlantýsýný ekleme
+builder.Services.AddServiceExtensions();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Identity Servisini ekleme
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;
@@ -26,7 +26,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// Authentication ve Authorization ekleme
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Auth/Login";   // Giriþ sayfasý yolu
@@ -41,7 +40,6 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
 var app = builder.Build();
 
-// Geliþtirme ve hata yönetimi
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

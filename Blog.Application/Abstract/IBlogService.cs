@@ -1,5 +1,13 @@
-﻿namespace Blog.Application.Abstract;
+﻿using Blog.Domain.Entities;
+using Blog.Domain.Models.Blog;
 
-public class IBlogService
+namespace Blog.Application.Abstract;
+
+public interface IBlogService
 {
+    Task<bool> AddBlog(CreateBlogModel blog);
+    Task<bool> UpdateBlog(UpdateBlogModel blog);
+    Task<bool> DeleteBlog(int id);
+    Task<Blogs> GetBlog(int id);
+    Task<List<Blogs>> GetBlogs();
 }
