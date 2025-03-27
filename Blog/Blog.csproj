@@ -23,8 +23,4 @@
     <ProjectReference Include="..\Blog.Persistance\Blog.Persistance.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\adminTheme\" />
-  </ItemGroup>
-
 </Project>

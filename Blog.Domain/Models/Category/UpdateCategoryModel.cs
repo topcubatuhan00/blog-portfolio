@@ -7,4 +7,5 @@ public class UpdateCategoryModel
     public string? Description { get; set; }
     public int? Order { get; set; }
     public string UpdatedBy { get; set; }
+    public bool IsActive { get; set; }
 }

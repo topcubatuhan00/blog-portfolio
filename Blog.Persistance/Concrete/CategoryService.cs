@@ -12,9 +12,10 @@ public class CategoryService : ICategoryService
     private readonly AppDbContext _appDbContext;
     private readonly IMapper _mapper;
 
-    public CategoryService(AppDbContext appDbContext)
+    public CategoryService(AppDbContext appDbContext, IMapper mapper)
     {
         _appDbContext = appDbContext;
+        _mapper = mapper;
     }
     public async Task<bool> AddCategory(CreateCategoryModel category)
     {
