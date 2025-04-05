@@ -49,7 +49,7 @@ public class BlogController : Controller
         if(id != null)
         {
             var res = await _categoryService.GetCategory(id.Value);
-            return View(res);
+            return View(new UpdateCategoryModel{ Id = res.Id, Name = res.Name ,  Description = res.Description });
         }
         return View();
     }

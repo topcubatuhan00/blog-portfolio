@@ -1,6 +1,65 @@
-﻿
+﻿<style>
+    .lang-section { display: none; }
+    .lang-section.active { display: block; }
+</style>
+
+<!-- CV Section -->
 <section class="mt-5 section">
     <div class="container">
-        <h1>About Page 2</h1>
+        <div class="ms-auto float-end">
+            <button id="langSwitch" class="btn btn-outline-primary">English</button>
+        </div>
+    </div>
+    <div class="container">
+
+        <!-- Türkçe -->
+        <div id="langTR" class="lang-section active">
+            <h1 class="mb-4">Hakkımda</h1>
+            <p><strong>Ad:</strong> Batuhan Topçu</p>
+            <p><strong>Üniversite:</strong> Erzurum Teknik Üniversitesi, Bilgisayar Mühendisliği (Bölüm 3.sü)</p>
+            <p><strong>Hakkımda:</strong> 2+ yıllık Full Stack Developer deneyimim var. ASP.NET Core MVC, Web API, React, Angular gibi teknolojilerle proje geliştirdim.</p>
+            <p><strong>Son İş:</strong> Dönusoft Business Solutions - ERP sistemleri geliştirme</p>
+
+            <h4 class="mt-4">Projeler</h4>
+            <ul>
+                <li>Görev Takip Sistemi (.NET Core Web API + React, Clean Architecture)</li>
+                <li>ERP Sistemi Geliştirme (MVC, jQuery, FastReport, Yapay Zeka API'leri)</li>
+            </ul>
+
+            <h4 class="mt-4">Yetenekler</h4>
+            <p>.NET Core MVC, MSSQL, PostgreSQL, RESTful API, ReactJS, Angular, Scrum, Entity Framework, Git</p>
+        </div>
+
+        <!-- English -->
+        <div id="langEN" class="lang-section">
+            <h1 class="mb-4">About Me</h1>
+            <p><strong>Name:</strong> Batuhan Topçu</p>
+            <p><strong>University:</strong> Erzurum Technical University, Computer Engineering (Top 3 in class)</p>
+            <p><strong>Summary:</strong> I have over 2 year of experience as a Full Stack Developer. I worked with ASP.NET Core MVC, Web API, React, Angular, and more.</p>
+            <p><strong>Current Role:</strong> Dönusoft Business Solutions - ERP system development</p>
+
+            <h4 class="mt-4">Projects</h4>
+            <ul>
+                <li>Task Management System (.NET Core Web API + React, Clean Architecture)</li>
+                <li>ERP System Development (MVC, jQuery, FastReport, AI API Integrations)</li>
+            </ul>
+
+            <h4 class="mt-4">Skills</h4>
+            <p>.NET Core MVC, MSSQL, PostgreSQL, RESTful API, ReactJS, Angular, Scrum, Entity Framework, Git</p>
+        </div>
+
     </div>
 </section>
+
+
+<script>
+  const btn = document.getElementById('langSwitch');
+  const tr = document.getElementById('langTR');
+  const en = document.getElementById('langEN');
+
+  btn.addEventListener('click', () => {
+    tr.classList.toggle('active');
+    en.classList.toggle('active');
+    btn.textContent = tr.classList.contains('active') ? 'English' : 'Türkçe';
+  });
+</script>

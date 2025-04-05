@@ -37,38 +37,47 @@ public class BlogService : IBlogService
 
     public async Task<HomeDataModel> GetAdminHomeData()
     {
-        var today = DateTime.UtcNow.Date; // Bugünün tarihi (sadece tarih kısmı)
-        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1); // Ayın ilk günü
+        var today = DateTime.UtcNow.Date;
+        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var now = DateTime.UtcNow;
 
         var todayCount = await _appDbContext.Blogs
-            .CountAsync(b => b.CreatedDate.Value.Date == today); // Bugün eklenenler
+            .CountAsync(b => b.CreatedDate.HasValue && b.CreatedDate.Value.Date == today);
 
         var thisMonthCount = await _appDbContext.Blogs
-            .CountAsync(b => b.CreatedDate >= firstDayOfMonth); // Bu ay eklenenler
+            .CountAsync(b => b.CreatedDate.HasValue && b.CreatedDate.Value >= firstDayOfMonth);
 
-        var totalCount = await _appDbContext.Blogs.CountAsync(); // Tüm blog sayısı
+        var totalCount = await _appDbContext.Blogs.CountAsync();
 
-        var lastBlogs = await _appDbContext.Blogs
-            .OrderByDescending(p => p.CreatedDate) // En yeni blogları al
+        var lastBlogsRaw = await _appDbContext.Blogs
+            .OrderByDescending(p => p.CreatedDate)
             .Take(6)
-            .Select(p => new HomeBlog
+            .Select(p => new
             {
-                Id = p.Id,
-                Day = EF.Functions.DateDiffDay(p.CreatedDate, DateTime.UtcNow) == 0
-                    ? "Bugün"
-                    : $"{EF.Functions.DateDiffDay(p.CreatedDate, DateTime.UtcNow)} gün önce",
-                Title = p.Title
+                p.Id,
+                p.CreatedDate,
+                p.Title
             })
             .ToListAsync();
 
-        var model = new HomeDataModel();
+        var lastBlogs = lastBlogsRaw.Select(p => new HomeBlog
+        {
+            Id = p.Id,
+            Title = p.Title,
+            Day = !p.CreatedDate.HasValue ? "" :
+                (now.Date - p.CreatedDate.Value.Date).Days == 0 ? "Bugün" :
+                $"{(now.Date - p.CreatedDate.Value.Date).Days} gün önce"
+        }).ToList();
 
-        model.BlogToday = todayCount;
-        model.BlogMonth = thisMonthCount;
-        model.BlogAll = totalCount;
-        model.LastBlogs = lastBlogs;
-        return model;
+        return new HomeDataModel
+        {
+            BlogToday = todayCount,
+            BlogMonth = thisMonthCount,
+            BlogAll = totalCount,
+            LastBlogs = lastBlogs
+        };
     }
+
 
     public async Task<Blogs> GetBlog(int id)
     {

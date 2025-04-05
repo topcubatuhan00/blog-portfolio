@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddServiceExtensions();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -28,9 +28,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Auth/Login";   // Giriþ sayfasý yolu
-    options.LogoutPath = "/Auth/Logout"; // Çýkýþ yapma yolu
-    options.AccessDeniedPath = "/Auth/AccessDenied"; // Yetkisiz eriþim sayfasý
+    options.LoginPath = "/Auth/Login";   // Giriï¿½ sayfasï¿½ yolu
+    options.LogoutPath = "/Auth/Logout"; // ï¿½ï¿½kï¿½ï¿½ yapma yolu
+    options.AccessDeniedPath = "/Auth/AccessDenied"; // Yetkisiz eriï¿½im sayfasï¿½
 });
 
 builder.Services.AddAuthentication();
@@ -51,7 +51,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // Kimlik doðrulamayý ekle
+app.UseAuthentication(); // Kimlik doï¿½rulamayï¿½ ekle
 app.UseAuthorization();  // Yetkilendirmeyi ekle
 
 app.MapControllerRoute(
