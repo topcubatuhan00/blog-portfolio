@@ -54,6 +54,8 @@ app.UseRouting();
 app.UseAuthentication(); // Kimlik do�rulamay� ekle
 app.UseAuthorization();  // Yetkilendirmeyi ekle
 
+app.UseMiddleware<AuthorizationRedirectMiddleware>();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

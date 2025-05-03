@@ -13,7 +13,7 @@ public class AdminController : Controller
         _blogService = blogService;
     }
 
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Index()
     {
         var model = await _blogService.GetAdminHomeData();

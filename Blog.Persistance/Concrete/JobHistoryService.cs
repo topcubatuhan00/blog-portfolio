@@ -19,16 +19,16 @@ public class JobHistoryService : IJobHistoryService
     public async Task<bool> AddJobHistory(CreateJobHistoryModel jobHistory)
     {
         var ent = _mapper.Map<JobHistory>(jobHistory);
-        var res = await _appDbContext.JobHistorys.AddAsync(ent);
+        var res = await _appDbContext.JobHistories.AddAsync(ent);
         return await _appDbContext.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteJobHistory(int id)
     {
-        var res = await _appDbContext.JobHistorys.FindAsync(id);
+        var res = await _appDbContext.JobHistories.FindAsync(id);
         if (res != null)
         {
-            _appDbContext.JobHistorys.Remove(res);
+            _appDbContext.JobHistories.Remove(res);
             return await _appDbContext.SaveChangesAsync() > 0;
         }
         return false;
@@ -36,20 +36,20 @@ public class JobHistoryService : IJobHistoryService
 
     public async Task<List<JobHistory>> GetJobHistories()
     {
-        var res = await _appDbContext.JobHistorys.ToListAsync();
+        var res = await _appDbContext.JobHistories.OrderByDescending(aa => aa.StartDate).ToListAsync();
         return res;
     }
 
     public async Task<JobHistory> GetJobHistory(int id)
     {
-        var res = await _appDbContext.JobHistorys.FindAsync(id);
+        var res = await _appDbContext.JobHistories.FindAsync(id);
         return res;
     }
 
     public async Task<bool> UpdateJobHistory(UpdateJobHistoryModel jobHistory)
     {
         var ent = _mapper.Map<JobHistory>(jobHistory);
-        var res = _appDbContext.JobHistorys.Update(ent);
+        var res = _appDbContext.JobHistories.Update(ent);
         return await _appDbContext.SaveChangesAsync() > 0;
     }
 }

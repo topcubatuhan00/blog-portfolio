@@ -13,13 +13,16 @@ public class BlogService : IBlogService
     private readonly AppDbContext _appDbContext;
     private readonly IMapper _mapper;
 
-    public BlogService(AppDbContext appDbContext)
+    public BlogService(AppDbContext appDbContext, IMapper mapper)
     {
+        _mapper  = mapper;
         _appDbContext = appDbContext;
     }
     public async Task<bool> AddBlog(CreateBlogModel blog)
     {
         var ent = _mapper.Map<Blogs>(blog);
+        ent.CreatedDate = DateTime.Now;
+        ent.CreatedBy = "Batuhan Topcu";
         var res = await _appDbContext.Blogs.AddAsync(ent);
         return await _appDbContext.SaveChangesAsync() > 0;
     }
@@ -33,6 +36,21 @@ public class BlogService : IBlogService
             return await _appDbContext.SaveChangesAsync() > 0;
         }
         return false;
+    }
+
+    public async Task<List<BlogListModel>> GetLastBlogs(int count)
+    {
+        count = count > 0 ? count : 3;
+        var res = _appDbContext.Blogs.Where(p => p.IsActive.Value).OrderByDescending(b => b.Id).Take(count);
+        return await res.Select(p => new BlogListModel
+        {
+            Id = p.Id,
+            Title = p.Title,
+            CategoryName = _appDbContext.Categories.Where(p => p.Id == p.Id).FirstOrDefault().Name,
+            Created = p.CreatedDate.Value,
+            ImageUrl = p.ImageUrl,
+            Author = p.CreatedBy,
+        }).ToListAsync();
     }
 
     public async Task<HomeDataModel> GetAdminHomeData()
@@ -79,16 +97,35 @@ public class BlogService : IBlogService
     }
 
 
-    public async Task<Blogs> GetBlog(int id)
+    public async Task<BlogListModel> GetBlog(int id)
     {
-        var res = await _appDbContext.Blogs.FindAsync(id);
+        var res = await (from p in _appDbContext.Blogs
+            join c in _appDbContext.Categories on p.CatId equals c.Id
+            where p.Id == id
+            select new BlogListModel
+            {
+                Id = p.Id,
+                Title = p.Title,
+                Author = p.CreatedBy,
+                Created = p.CreatedDate ?? DateTime.MinValue,
+                Content = p.Content,
+                CatId = p.CatId,
+                ImageUrl = p.ImageUrl,
+                CategoryName = c.Name,
+                IsActive = p.IsActive.Value
+            }).FirstOrDefaultAsync();
+        
         return res;
     }
 
-    public async Task<List<Blogs>> GetBlogs()
+    public async Task<List<Blogs>> GetBlogs(bool isAdmin = false)
     {
-        var res = await _appDbContext.Blogs.ToListAsync();
-        return res;
+        if (!isAdmin)
+        {
+            return _appDbContext.Blogs.Where(p => p.IsActive.Value).ToList();
+        }
+        
+        return _appDbContext.Blogs.ToList();
     }
 
     public async Task<bool> UpdateBlog(UpdateBlogModel blog)

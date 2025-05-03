@@ -9,7 +9,8 @@ public interface IBlogService
     Task<bool> AddBlog(CreateBlogModel blog);
     Task<bool> UpdateBlog(UpdateBlogModel blog);
     Task<bool> DeleteBlog(int id);
-    Task<Blogs> GetBlog(int id);
-    Task<List<Blogs>> GetBlogs();
+    Task<BlogListModel> GetBlog(int id);
+    Task<List<Blogs>> GetBlogs(bool isAdmin);
+    Task<List<BlogListModel>> GetLastBlogs(int count);
     Task<HomeDataModel> GetAdminHomeData();
 }

@@ -1,0 +1,41 @@
+@model List<Blogs>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Başlık</th>
+            <th scope="col">O. Tarihi</th>
+            <th scope="col">Aktif mi?</th>
+            <th scope="col">Düzenle</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@item.Id</th>
+                <td>@item.Title</td>
+                <td>@item.CreatedDate</td>
+                <td>
+                    @if (item.IsActive == true)
+                    {
+                        <span>Aktif</span>
+                    }
+                    else
+                    {
+                        <span>Pasif</span>
+                    }
+                </td>
+                <td>
+                    <a href="/Blog/AddBlog/@item.Id"><i class="bi bi-pencil-square"></i></a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

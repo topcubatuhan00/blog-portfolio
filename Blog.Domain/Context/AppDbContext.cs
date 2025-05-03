@@ -16,7 +16,7 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Category> Categories { get; set; }
     public DbSet<About> Abouts { get; set; }
     public DbSet<Blogs> Blogs { get; set; }
-    public DbSet<JobHistory> JobHistorys { get; set; }
+    public DbSet<JobHistory> JobHistories { get; set; }
     public DbSet<Skill> Skills { get; set; }
 
     public override int SaveChanges()

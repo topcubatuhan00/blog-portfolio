@@ -15,7 +15,6 @@ public static class PersistanceDIServiceInsataller
         services.AddScoped<IJobHistoryService, JobHistoryService>();
         services.AddScoped<ISkillService, SkillService>();
 
-        //services.AddAutoMapper(typeof(Blog.Persistance.AssemblyReference).Assembly);
         services.AddAutoMapper(typeof(MappingProfile));
     }
 }

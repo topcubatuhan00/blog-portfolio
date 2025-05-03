@@ -53,10 +53,10 @@ public class AuthController : Controller
     public async Task<IActionResult> Register()
     {
         User user = new User { UserName = "topcubatuhan00", FullName = "Batuhan Topcu", Email = "topcubatuhan00@gmail.com", EmailConfirmed = true, PhoneNumber = "05538570750" };
-        //var res = await _userManager.CreateAsync(user, "Bursa16**..");
-        //await _roleManager.CreateAsync(new IdentityRole("Admin"));
-        var res = await _userManager.AddToRoleAsync(user, "Admin");
-        if (res.Succeeded)
+        var res = await _userManager.CreateAsync(user, "Bursa16**..");
+        await _roleManager.CreateAsync(new IdentityRole("Admin"));
+        var res2 = await _userManager.AddToRoleAsync(user, "Admin");
+        if (res2.Succeeded)
         {
             return RedirectToAction("Login", "Account");
         }

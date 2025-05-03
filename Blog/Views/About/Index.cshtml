@@ -1,65 +1,308 @@
-﻿<style>
-    .lang-section { display: none; }
-    .lang-section.active { display: block; }
+﻿@model List<About>
+@{
+  var trAbout = Model.Where(p => p.UpdatedBy == "TR" && p.CreatedBy == "ABOUT").Select(p => p.Description).FirstOrDefault();
+  var enAbout = Model.Where(p => p.UpdatedBy == "EN" && p.CreatedBy == "ABOUT").Select(p => p.Description).FirstOrDefault();
+  
+  var skills = Model.Where(p => p.UpdatedBy == "EN" && p.CreatedBy == "SKILLS").Select(p => p.Description).FirstOrDefault();
+  
+  var enPrj = Model.Where(p => p.UpdatedBy == "EN" && p.CreatedBy == "PROJECTS").Select(p => new {Title = p.Title, Description = p.Description}).ToList();
+  var trPrj = Model.Where(p => p.UpdatedBy == "TR" && p.CreatedBy == "PROJECTS").Select(p => new {Title = p.Title, Description = p.Description}).ToList();
+
+  var jobs = await _jobHistoryService.GetJobHistories();
+  var jbEN = jobs.Where(p => p.CreatedBy == "EN").ToList();
+  var jbTR = jobs.Where(p => p.CreatedBy == "TR").ToList();
+}
+
+@* Stil Bölümü *@
+<style>
+  .lang-switch-container {
+    position: relative;
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f0f2f5, #ffffff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .lang-toggle {
+    position: absolute;
+    top: 50px;
+    right: 30px;
+    z-index: 10;
+  }
+
+  .lang-toggle button {
+    border: none;
+    background: linear-gradient(135deg, #4158d0, #c850c0);
+    color: white;
+    padding: 10px 18px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .lang-toggle button:hover {
+    background: linear-gradient(135deg, #1a1a1a, #c850c0);
+  }
+
+  .lang-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.5s ease;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .lang-section.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+  }
+
+  .lang-section h2 {
+    font-size: 38px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .lang-section h2::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, #4158d0, #c850c0);
+    bottom: -8px;
+    left: 0;
+    border-radius: 5px;
+  }
+
+  .lang-section p,
+  .lang-section li {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 10px;
+  }
+
+  .lang-section ul {
+    padding-left: 25px;
+    margin-top: 10px;
+  }
+
+  .lang-section h4 {
+    font-size: 22px;
+    margin-top: 30px;
+    font-weight: 600;
+    color: #222;
+    position: relative;
+  }
+
+  .lang-section h4::before {
+    content: "•";
+    color: #c850c0;
+    margin-right: 8px;
+    font-size: 26px;
+    vertical-align: middle;
+  }
+
+  .card-about {
+    background-color: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+  }
+
+  .card-about:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-about ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .card-about ul li {
+    border-left: 5px solid;
+    border-image: linear-gradient(to bottom, #4158d0, #c850c0) 1;
+    padding: 20px 25px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card-about ul li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-about ul li strong {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .card-about ul li p {
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 15px;
+  }
+
+  .card-about ul li .border-top {
+    border-top: 1px solid #eee;
+    margin-top: 15px;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #777;
+  }
 </style>
 
-<!-- CV Section -->
-<section class="mt-5 section">
-    <div class="container">
-        <div class="ms-auto float-end">
-            <button id="langSwitch" class="btn btn-outline-primary">English</button>
-        </div>
+
+@* HTML Bölümü *@
+<section class="lang-switch-container">
+  <div class="container" data-aos="fade-up">
+
+    <div class="lang-toggle" style="margin-top: 70px">
+      <button id="langSwitchBtn">EN</button>
     </div>
-    <div class="container">
 
-        <!-- Türkçe -->
-        <div id="langTR" class="lang-section active">
-            <h1 class="mb-4">Hakkımda</h1>
-            <p><strong>Ad:</strong> Batuhan Topçu</p>
-            <p><strong>Üniversite:</strong> Erzurum Teknik Üniversitesi, Bilgisayar Mühendisliği (Bölüm 3.sü)</p>
-            <p><strong>Hakkımda:</strong> 2+ yıllık Full Stack Developer deneyimim var. ASP.NET Core MVC, Web API, React, Angular gibi teknolojilerle proje geliştirdim.</p>
-            <p><strong>Son İş:</strong> Dönusoft Business Solutions - ERP sistemleri geliştirme</p>
+    <!-- Türkçe -->
+    <div id="langTR" class="lang-section active">
+      <div class="card-about">
+        <h2>Hakkımda</h2>
+        <p>@trAbout</p>
+        <h4>Projeler</h4>
+        <ul>
+          @foreach (var item in trPrj)
+          {
+            <li>
+              <strong> @item.Title </strong>
+              <p> @item.Description </p>
+            </li>
+          }
+        </ul>
 
-            <h4 class="mt-4">Projeler</h4>
-            <ul>
-                <li>Görev Takip Sistemi (.NET Core Web API + React, Clean Architecture)</li>
-                <li>ERP Sistemi Geliştirme (MVC, jQuery, FastReport, Yapay Zeka API'leri)</li>
-            </ul>
+        <h4>Yetenekler</h4>
+        <p> @skills </p>
+      </div>
 
-            <h4 class="mt-4">Yetenekler</h4>
-            <p>.NET Core MVC, MSSQL, PostgreSQL, RESTful API, ReactJS, Angular, Scrum, Entity Framework, Git</p>
-        </div>
+      <!-- Work Experience Card -->
+      <div class="card-about" style="margin-top: 40px;">
+        <h2>İş Geçmişi</h2>
+        <ul>
+          
+          @foreach (var it in jbTR)
+          {
+            <li>
+              <strong>@it.Position - @it.CompanyName</strong>
+              <p>@it.Description</p>
+              <p class="border-top d-flex align-items-center justify-content-between">
+                <span>@it.Location</span>
+                @{
+                  var startDate = it.StartDate;
+                  var endDate = it.IsContinue == true ? DateTime.Now : it.EndDate ?? DateTime.Now;
 
-        <!-- English -->
-        <div id="langEN" class="lang-section">
-            <h1 class="mb-4">About Me</h1>
-            <p><strong>Name:</strong> Batuhan Topçu</p>
-            <p><strong>University:</strong> Erzurum Technical University, Computer Engineering (Top 3 in class)</p>
-            <p><strong>Summary:</strong> I have over 2 year of experience as a Full Stack Developer. I worked with ASP.NET Core MVC, Web API, React, Angular, and more.</p>
-            <p><strong>Current Role:</strong> Dönusoft Business Solutions - ERP system development</p>
+                  var monthDiff = (endDate.Year - startDate.Value.Year) * 12 + (endDate.Month - startDate.Value.Month) + 1;
 
-            <h4 class="mt-4">Projects</h4>
-            <ul>
-                <li>Task Management System (.NET Core Web API + React, Clean Architecture)</li>
-                <li>ERP System Development (MVC, jQuery, FastReport, AI API Integrations)</li>
-            </ul>
+                  string GetMonthYear(DateTime date)
+                  {
+                    var turkishMonths = new[] { "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
+                    return $"{turkishMonths[date.Month - 1]} {date.Year}";
+                  }
 
-            <h4 class="mt-4">Skills</h4>
-            <p>.NET Core MVC, MSSQL, PostgreSQL, RESTful API, ReactJS, Angular, Scrum, Entity Framework, Git</p>
-        </div>
+                  var startStr = GetMonthYear(startDate.Value);
+                  var endStr = it.IsContinue == true ? "Halen" : GetMonthYear(endDate);
+                }
 
+                <strong class="fs-6">@startStr - @endStr (@monthDiff ay)</strong>
+              </p>
+            </li>
+          }
+        </ul>
+      </div>
     </div>
+
+    <!-- English -->
+    <div id="langEN" class="lang-section">
+      <div class="card-about">
+        <h2>About Me</h2>
+        <p>@enAbout</p>
+
+        <h4>Projects</h4>
+        <ul>
+          @foreach (var item in enPrj)
+          {
+            <li>
+              <strong> @item.Title </strong>
+              <p> @item.Description </p>
+            </li>
+          }
+        </ul>
+
+        <h4>Skills</h4>
+        <p>@skills</p>
+      </div>
+
+      <!-- Work Experience Card -->
+      <div class="card-about" style="margin-top: 40px;">
+        <h2>Work Experience</h2>
+        <ul>
+          @foreach (var it in jbEN)
+          {
+            <li>
+              <strong>@it.Position - @it.CompanyName</strong>
+              <p>@it.Description</p>
+              <p class="border-top d-flex align-items-center justify-content-between">
+                <span>@it.Location</span>
+                @{
+                  var startDate = it.StartDate;
+                  var endDate = it.IsContinue == true ? DateTime.Now : it.EndDate ?? DateTime.Now;
+
+                  var monthDiff = (endDate.Year - startDate.Value.Year) * 12 + (endDate.Month - startDate.Value.Month) + 1;
+
+                  string GetMonthYear(DateTime date)
+                  {
+                    var englishMonths = new[] { "January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December" };
+                    return $"{englishMonths[date.Month - 1]} {date.Year}";
+                  }
+
+                  var startStr = GetMonthYear(startDate.Value);
+                  var endStr = it.IsContinue == true ? "Present" : GetMonthYear(endDate);
+                }
+
+                <strong class="fs-6">@startStr - @endStr (@monthDiff months)</strong>
+
+              </p>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
 
 <script>
-  const btn = document.getElementById('langSwitch');
-  const tr = document.getElementById('langTR');
-  const en = document.getElementById('langEN');
+  const btn = document.getElementById("langSwitchBtn");
+  const tr = document.getElementById("langTR");
+  const en = document.getElementById("langEN");
 
-  btn.addEventListener('click', () => {
-    tr.classList.toggle('active');
-    en.classList.toggle('active');
-    btn.textContent = tr.classList.contains('active') ? 'English' : 'Türkçe';
+  btn.addEventListener("click", () => {
+    tr.classList.toggle("active");
+    en.classList.toggle("active");
+    btn.textContent = tr.classList.contains("active") ? "EN" : "TR";
   });
 </script>

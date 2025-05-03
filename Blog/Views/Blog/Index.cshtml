@@ -1,6 +1,82 @@
-﻿
+﻿@using System.Text.RegularExpressions
+@{
+    var data = await _blogService.GetBlogs(false);
+    var chunkSize = 3;
+}
+
+<style>
+    .blog-card-wrapper {
+        background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient border */
+        padding: 2px; /* Border kalınlığı */
+        border-radius: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .blog-card-wrapper:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .blog-card {
+        background-color: white;
+        border-radius: 1rem;
+        height: 100%;
+        padding: 1.5rem;
+    }
+
+    .blog-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .blog-text {
+        color: #555;
+        font-size: 0.95rem;
+    }
+
+    .read-more-btn {
+        margin-top: 1rem;
+        background: linear-gradient(to right, #6a11cb, #2575fc);
+        color: white !important;
+        border: none;
+        transition: background 0.3s ease;
+    }
+
+    .read-more-btn:hover {
+        background: linear-gradient(to right, #2575fc, #6a11cb);
+        color: white !important;
+    }
+</style>
+@{
+    string StripHtml(string input)
+    {
+        return Regex.Replace(input, "<.*?>", String.Empty);
+    }
+}
 <section class="mt-5 section">
     <div class="container">
-        <h1>Blog Page 2</h1>
+        <h1 class="mb-4">Blog Yazılarım</h1>
+        
+        @for (int i = 0; i < data.Count; i += chunkSize)
+        {
+            <div class="row g-4">
+                @foreach (var blog in data.Skip(i).Take(chunkSize))
+                {
+                    <div class="col-md-4">
+                        <div class="blog-card-wrapper">
+                            <div class="blog-card">
+                                <h5 class="blog-title">@blog.Title</h5>
+                                <p class="blog-text">
+                                    @(blog.Content.Length > 50
+                                        ? StripHtml(blog.Content.Substring(0, 50)) + "..."
+                                        : StripHtml(blog.Content))
+                                </p>
+                                <a href="/Blog/Details/@blog.Id" class="btn read-more-btn">Devamını Oku </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
     </div>
 </section>
