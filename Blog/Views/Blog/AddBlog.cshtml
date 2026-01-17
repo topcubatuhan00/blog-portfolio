@@ -2,8 +2,6 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var cats = ViewBag.Categories as List<Category>;
-    Console.WriteLine("AAAAAAAAAAAAAAAAAAA");
-    Console.WriteLine(Model.ImageUrl);
 }
 
 <div class="card">
@@ -28,7 +26,7 @@
             <div class="col-12">
                 <label for="inputPassword4" class="form-label">Kategorisi</label>
                 <select class="form-control catId" name="catId" asp-for="CatId">
-                    @foreach (var item in ViewBag.Categories as List<Blog.Domain.Entities.Category>)
+                    @foreach (var item in ViewBag.Categories as List<Category>)
                     {
                         <option value="@item.Id" @(item.Id == Model.CatId ? "selected" : "")>@item.Name</option>
                     }
@@ -37,6 +35,13 @@
             <div>
                 <label asp-for="IsActive" name="" class="form-check-label">Aktif mi</label>
                 <input asp-for="IsActive" checked="@Model.IsActive" name="IsActive" type="checkbox" class="form-check"/>
+            </div>
+            <div>
+                <label asp-for="CreatedDate" class="form-label">Oluşturulma Tarihi</label>
+                <input asp-for="CreatedDate" name="CreatedDate"
+                       type="datetime-local"
+                       class="form-control"
+                       value="@Model.CreatedDate.ToString("yyyy-MM-ddTHH:mm")" />
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Kaydet</button>

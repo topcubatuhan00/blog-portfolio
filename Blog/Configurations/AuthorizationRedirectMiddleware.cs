@@ -16,6 +16,8 @@ public class AuthorizationRedirectMiddleware
 
         if (!context.User.Identity.IsAuthenticated &&
             path != "/" &&
+            path != "/blog" &&
+            path != "/about" &&
             !path.StartsWith("/auth/login") &&
             !path.StartsWith("/css") &&
             !path.StartsWith("/js") &&

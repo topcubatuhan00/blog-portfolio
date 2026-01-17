@@ -47,6 +47,7 @@ public class BlogController : Controller
             model.Id = res.Id;
             model.ImageUrl = res.ImageUrl;
             model.IsActive = res.IsActive;
+            model.CreatedDate = res.Created;
         }
         return View(model);
     }
@@ -67,7 +68,12 @@ public class BlogController : Controller
                 Id = model.Id,
                 ImageUrl = model.ImageUrl,
                 UpdatedBy = "Batuhan Topcu",
-                IsActive = chx == "on" ? true : false
+                IsActive = chx == "on" ? true : false,
+                CreatedBy = model.CreatedBy,
+                CreatedDate =  DateTime.SpecifyKind(
+                    model.CreatedDate, 
+                    DateTimeKind.Utc
+                )
             });
             if (!res2)
                 ModelState.AddModelError("Blog","Yazı Güncellenirken Bir Sorun Oluştu");    
