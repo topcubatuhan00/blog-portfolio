@@ -1,6 +1,7 @@
 using Blog.Configurations;
 using Blog.Domain.Context;
 using Blog.Domain.Entities;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,6 +47,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto
+});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -54,7 +60,7 @@ app.UseRouting();
 app.UseAuthentication(); // Kimlik do�rulamay� ekle
 app.UseAuthorization();  // Yetkilendirmeyi ekle
 
-app.UseMiddleware<AuthorizationRedirectMiddleware>();
+//app.UseMiddleware<AuthorizationRedirectMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
