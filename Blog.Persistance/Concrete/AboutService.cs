@@ -12,9 +12,10 @@ public class AboutService : IAboutService
     private readonly AppDbContext _appDbContext;
     private readonly IMapper _mapper;
 
-    public AboutService(AppDbContext appDbContext)
+    public AboutService(AppDbContext appDbContext, IMapper mapper)
     {
         _appDbContext = appDbContext;
+        _mapper = mapper;
     }
 
     public async Task<bool> AddAbout(CreateAboutModel about)

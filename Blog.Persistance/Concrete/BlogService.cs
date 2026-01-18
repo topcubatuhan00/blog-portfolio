@@ -41,13 +41,13 @@ public class BlogService : IBlogService
     public async Task<List<BlogListModel>> GetLastBlogs(int count)
     {
         count = count > 0 ? count : 3;
-        var res = _appDbContext.Blogs.Where(p => p.IsActive.Value).OrderByDescending(b => b.Id).Take(count);
+        var res = _appDbContext.Blogs.Where(p => p.IsActive != null ? p.IsActive.Value : false).OrderByDescending(b => b.Id).Take(count);
         return await res.Select(p => new BlogListModel
         {
             Id = p.Id,
             Title = p.Title,
-            CategoryName = _appDbContext.Categories.Where(p => p.Id == p.Id).FirstOrDefault().Name,
-            Created = p.CreatedDate.Value,
+            CategoryName = _appDbContext.Categories.Where(p => p.Id == p.Id).Select(p => p.Name).FirstOrDefault(),
+            Created = p.CreatedDate != null ? p.CreatedDate.Value : DateTime.Today,
             ImageUrl = p.ImageUrl,
             Author = p.CreatedBy,
         }).ToListAsync();
@@ -112,7 +112,7 @@ public class BlogService : IBlogService
                 CatId = p.CatId,
                 ImageUrl = p.ImageUrl,
                 CategoryName = c.Name,
-                IsActive = p.IsActive.Value
+                IsActive = p.IsActive != null ? p.IsActive.Value : false
             }).FirstOrDefaultAsync();
         
         return res;
@@ -122,7 +122,7 @@ public class BlogService : IBlogService
     {
         if (!isAdmin)
         {
-            return _appDbContext.Blogs.Where(p => p.IsActive.Value).ToList();
+            return _appDbContext.Blogs.Where(p => p.IsActive != null ? p.IsActive.Value : true).ToList();
         }
         
         return _appDbContext.Blogs.ToList();

@@ -44,6 +44,7 @@ public class CategoryService : ICategoryService
     public async Task<Category> GetCategory(int id)
     {
         var res = await _appDbContext.Categories.FindAsync(id);
+        if (res == null) throw new KeyNotFoundException($"Category not found. Id: {id}");
         return res;
     }
 

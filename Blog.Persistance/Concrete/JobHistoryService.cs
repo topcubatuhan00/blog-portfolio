@@ -12,9 +12,10 @@ public class JobHistoryService : IJobHistoryService
     private readonly AppDbContext _appDbContext;
     private readonly IMapper _mapper;
 
-    public JobHistoryService(AppDbContext appDbContext)
+    public JobHistoryService(AppDbContext appDbContext, IMapper mapper)
     {
         _appDbContext = appDbContext;
+        _mapper = mapper;
     }
     public async Task<bool> AddJobHistory(CreateJobHistoryModel jobHistory)
     {

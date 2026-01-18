@@ -12,9 +12,10 @@ public class SkillService : ISkillService
     private readonly AppDbContext _appDbContext;
     private readonly IMapper _mapper;
 
-    public SkillService(AppDbContext appDbContext)
+    public SkillService(AppDbContext appDbContext, IMapper mapper)
     {
         _appDbContext = appDbContext;
+        _mapper = mapper;
     }
     public async Task<bool> AddSkill(CreateSkillModel skill)
     {
@@ -43,6 +44,7 @@ public class SkillService : ISkillService
     public async Task<List<Skill>> GetSkills()
     {
         var res = await _appDbContext.Skills.ToListAsync();
+        if(res == null)throw new KeyNotFoundException($"Category not found.");
         return res;
     }
 
