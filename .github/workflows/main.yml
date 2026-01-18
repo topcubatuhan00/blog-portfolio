@@ -1,0 +1,37 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps: 
+    - uses: actions/checkout@v3
+  
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with: 
+        dotnet-version: '8.0.x'
+  
+    - name: Restore
+      run: dotnet restore ./Blog.sln
+  
+    - name: Build
+      run: dotnet build ./Blog.sln --configuration Release
+
+    - name: Run Tests
+      run: dotnet test ./Blog.sln --configuration Release --no-build
+  
+    - name: Publish
+      run: dotnet publish ./Blog.csproj --configuration Release --no-build --output './publish'
+    - name: Deployment
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: topcubatuhan00
+        publish-profile: '${{ secrets.AZURE_PUBLISH_PROFILE }}'
+        package: './publish'
