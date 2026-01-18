@@ -6,10 +6,10 @@ public class UpdateBlogModel
     public string? Title { get; set; }
     public string? Content { get; set; }
     public string? Author { get; set; }
-    public string UpdatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
     public string? ImageUrl { get; set; }
     public int CatId { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedDate { get; set; }
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 }

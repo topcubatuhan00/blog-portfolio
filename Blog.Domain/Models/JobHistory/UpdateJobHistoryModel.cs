@@ -11,5 +11,5 @@ public class UpdateJobHistoryModel
     public bool? IsContinue { get; set; }
     public string? Location { get; set; }
     public string? Skills { get; set; }
-    public string UpdatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 }

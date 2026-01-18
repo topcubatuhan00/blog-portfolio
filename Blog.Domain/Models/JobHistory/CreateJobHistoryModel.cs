@@ -10,5 +10,5 @@ public class CreateJobHistoryModel
     public bool? IsContinue { get; set; }
     public string? Location { get; set; }
     public string? Skills { get; set; }
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 }
