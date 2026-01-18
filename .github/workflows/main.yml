@@ -28,7 +28,7 @@ jobs:
       run: dotnet test ./Blog.sln --configuration Release --no-build
   
     - name: Publish
-      run: dotnet publish ./Blog.csproj --configuration Release --no-build --output './publish'
+      run: dotnet publish ./Blog/Blog.csproj --configuration Release --no-build --output './publish'
     - name: Deployment
       uses: azure/webapps-deploy@v2
       with:
